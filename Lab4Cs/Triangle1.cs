@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,6 @@ using System.Windows.Forms;
 
 namespace Lab4Cs
 {
-
     public struct Point2D
     {
         public int x;
@@ -21,7 +21,7 @@ namespace Lab4Cs
     {
         static int f = 0;
         int n = 3;
-        Point2D[] points;
+        public Point2D[] points;
         public double[] lenght;
         public double angle1 = 0;
         public double angle2 = 0;
@@ -36,6 +36,7 @@ namespace Lab4Cs
         public double c;
         public Triangle()
         {
+            lenght = new double[n];
             points = new Point2D[3];
             for (int i = 0; i < points.Length; i++)
             {
@@ -82,7 +83,6 @@ namespace Lab4Cs
 
         public void Lenght()
         {
-            lenght = new double[n];
 
             for (int i = 0; i < n; i++)
             {
@@ -115,6 +115,47 @@ namespace Lab4Cs
             {
                 square *= -1;
             }
+        }
+
+        public void Write(BinaryWriter bw)
+        {
+            for (int i = 0; i < points.Length; i++)
+            {
+                bw.Write(points[i].x);
+                bw.Write(points[i].y);
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                bw.Write(lenght[i]);
+            }
+            bw.Write(angle1);
+            bw.Write(angle2);
+            bw.Write(angle3);
+            bw.Write(perimetr);
+            bw.Write(square);
+        }
+
+        public Triangle Read(BinaryReader br)
+        {
+            Triangle temp = new Triangle();
+            RightTriangle all = new RightTriangle();
+
+            for (int i = 0; i < points.Length; i++)
+            {
+                temp.points[i].x = br.ReadInt32();
+                temp.points[i].y = br.ReadInt32();
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                temp.lenght[i] = br.ReadDouble();
+            }
+            temp.angle1 = br.ReadDouble();
+            temp.angle2 = br.ReadDouble();
+            temp.angle3 = br.ReadDouble();
+            temp.perimetr = br.ReadDouble();
+            temp.square = br.ReadDouble();
+
+            return temp;
         }
     };
 }
